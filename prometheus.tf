@@ -27,9 +27,8 @@ data "aws_ami" "prometheus" {
 }
 
 resource "aws_eip" "prometheus" {
-  vpc        = true
-  instance   = aws_instance.prometheus.id
-  depends_on = [module.vpc]
+  vpc      = true
+  instance = aws_instance.prometheus.id
 
   tags = merge(
     var.common_tags,
