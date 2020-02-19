@@ -79,7 +79,7 @@ sudo hostnamectl set-hostname prometheus.ghn.me
 
 echo 'Mount EBS'
 sudo mkdir -p /data
-echo '/dev/xvdg  /data  ext4  defaults,nofail  0  2' | sudo tee -a /etc/fstab
+echo '/dev/nvme1n1  /data  ext4  defaults,nofail  0  2' | sudo tee -a /etc/fstab
 sudo mount -a
 
 if [[ -d /data/swarm ]]; then
