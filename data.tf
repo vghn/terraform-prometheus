@@ -2,7 +2,6 @@
 resource "aws_ebs_volume" "prometheus_data" {
   availability_zone = "us-east-1a"
   type              = "gp2"
-  snapshot_id       = "snap-0f19073579f63ba93"
   encrypted         = true
 
   tags = merge(
