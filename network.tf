@@ -1,8 +1,13 @@
+# Prometheus Subnets
+data "aws_subnet_ids" "public" {
+  vpc_id = var.vpc_id
+}
+
 # Prometheus Instance Security Group
 resource "aws_security_group" "prometheus" {
   name        = "Prometheus"
   description = " Prometheus Security Group"
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = var.vpc_id
 
   tags = var.common_tags
 }
