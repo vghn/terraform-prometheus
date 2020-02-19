@@ -3,6 +3,7 @@ resource "aws_ebs_volume" "prometheus_data" {
   availability_zone = "us-east-1a"
   type              = "gp2"
   encrypted         = true
+  size              = 10
 
   tags = merge(
     var.common_tags,
