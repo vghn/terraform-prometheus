@@ -54,7 +54,7 @@ resource "cloudflare_record" "prometheus" {
 resource "aws_instance" "prometheus" {
   instance_type               = "t3.micro"
   ami                         = data.aws_ami.prometheus.id
-  subnet_id                   = sort(data.aws_subnet_ids.public.ids)[0]
+  subnet_id                   = data.aws_subnet.primary.id
   vpc_security_group_ids      = [aws_security_group.prometheus.id]
   iam_instance_profile        = aws_iam_instance_profile.prometheus.name
   key_name                    = aws_key_pair.vgh.key_name
@@ -77,7 +77,7 @@ sudo apt-get -q -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--fo
 echo 'Set hostname'
 sudo hostnamectl set-hostname prometheus.ghn.me
 
-echo 'Mount EBS'
+echo 'Mount Data EBS'
 sudo mkdir -p /data
 echo '/dev/nvme1n1  /data  ext4  defaults,nofail  0  2' | sudo tee -a /etc/fstab
 sudo mount -a

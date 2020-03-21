@@ -1,6 +1,10 @@
 # Prometheus Data Volume
+data "aws_instance" "prometheus" {
+  instance_id = aws_instance.prometheus.id
+}
+
 resource "aws_ebs_volume" "prometheus_data" {
-  availability_zone = "us-east-1a"
+  availability_zone = data.aws_subnet.primary.availability_zone
   type              = "gp2"
   encrypted         = true
   size              = 10

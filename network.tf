@@ -3,6 +3,10 @@ data "aws_subnet_ids" "public" {
   vpc_id = var.vpc_id
 }
 
+data "aws_subnet" "primary" {
+  id = sort(data.aws_subnet_ids.public.ids)[0]
+}
+
 # Prometheus Instance Security Group
 resource "aws_security_group" "prometheus" {
   name        = "Prometheus"
