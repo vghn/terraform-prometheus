@@ -84,13 +84,7 @@ sudo mount -a
 
 echo 'Mount WireGuard config'
 if [[ -d /data/wireguard ]]; then
-  sudo mkdir -p /etc/wireguard
-  echo '/data/wireguard  /etc/wireguard  none  defaults,bind  0  2' | sudo tee -a /etc/fstab
-  sudo mount -a
-  if [[ -s /etc/wireguard/wg0.conf ]]; then
-    sudo systemctl start wg-quick@wg0
-    sudo systemctl enable wg-quick@wg0
-  fi
+  rm -f /data/wireguard
 fi
 
 if [[ -d /data/swarm ]]; then
