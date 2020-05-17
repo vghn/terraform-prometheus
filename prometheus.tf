@@ -82,17 +82,6 @@ sudo mkdir -p /data
 echo '/dev/nvme1n1  /data  ext4  defaults,nofail  0  2' | sudo tee -a /etc/fstab
 sudo mount -a
 
-echo 'Mount WireGuard config'
-if [[ -d /data/wireguard ]]; then
-  sudo mkdir -p /etc/wireguard
-  echo '/data/wireguard  /etc/wireguard  none  defaults,bind  0  2' | sudo tee -a /etc/fstab
-  sudo mount -a
-  if [[ -s /etc/wireguard/wg0.conf ]]; then
-    sudo systemctl start wg-quick@wg0
-    sudo systemctl enable wg-quick@wg0
-  fi
-fi
-
 if [[ -d /data/swarm ]]; then
   echo 'Restore Swarm'
   sudo service docker stop
