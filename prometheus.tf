@@ -69,31 +69,31 @@ IFS=$'\n\t'
 # From: https://alestic.com/2010/12/ec2-user-data-output/
 exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 
-echo 'Update APT'
+echo '*** Update APT'
 export DEBIAN_FRONTEND=noninteractive
-while ! apt-get -y update; do sleep 1; done
+while ! sudo apt-get -y update; do sleep 1; done
 sudo apt-get -q -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' --allow-remove-essential upgrade
 
-echo 'Set hostname'
+echo '*** Set hostname'
 sudo hostnamectl set-hostname prometheus.ghn.me
 
-echo 'Mount Data EBS'
+echo '*** Mount Data EBS'
 sudo mkdir -p /data
 echo '/dev/nvme1n1  /data  ext4  defaults,nofail  0  2' | sudo tee -a /etc/fstab
 sudo mount -a
 
 if [[ -d /data/swarm ]]; then
-  echo 'Restore Swarm'
+  echo '*** Restore Swarm'
   sudo service docker stop
   sudo mkdir -p /var/lib/docker/swarm
   echo '/data/swarm  /var/lib/docker/swarm  none  defaults,bind  0  2' | sudo tee -a /etc/fstab
   sudo mount -a
   sudo service docker start
 
-  echo 'Reinitialize cluster'
+  echo '*** Reinitialize cluster'
   sudo docker swarm init --force-new-cluster --advertise-addr $(curl -s  http://169.254.169.254/latest/meta-data/local-ipv4)
 
-  echo 'Restart services'
+  echo '*** Restart services'
   sudo service docker restart
 fi
 
