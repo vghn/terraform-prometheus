@@ -7,11 +7,6 @@ data "aws_subnet" "primary" {
   id = sort(data.aws_subnet_ids.public.ids)[0]
 }
 
-# Allowed IPs
-data "dns_a_record_set" "home" {
-  host = "home.ghn.me"
-}
-
 # Prometheus Instance Security Group
 resource "aws_security_group" "prometheus" {
   name        = "Prometheus"
@@ -27,7 +22,7 @@ resource "aws_security_group_rule" "prometheus_ssh" {
   to_port           = 22
   protocol          = "tcp"
   security_group_id = aws_security_group.prometheus.id
-  cidr_blocks       = formatlist("%s/32", data.dns_a_record_set.home.addrs)
+  cidr_blocks       = ["0.0.0.0/0"]
 }
 
 resource "aws_security_group_rule" "prometheus_http" {
