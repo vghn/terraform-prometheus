@@ -27,7 +27,7 @@ resource "aws_security_group_rule" "prometheus_ssh" {
   to_port           = 22
   protocol          = "tcp"
   security_group_id = aws_security_group.prometheus.id
-  cidr_blocks       = data.dns_a_record_set.home.addrs
+  cidr_blocks       = ["${formatlist("%s/32", data.dns_a_record_set.home.addrs)}"]
 }
 
 resource "aws_security_group_rule" "prometheus_http" {
