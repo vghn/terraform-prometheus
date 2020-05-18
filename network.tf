@@ -12,6 +12,10 @@ data "dns_a_record_set" "home" {
   host = "home.ghn.me"
 }
 
+locals {
+  home_ips = ["${formatlist("%s/32", data.dns_a_record_set.home.addrs)}"]
+}
+
 # Prometheus Instance Security Group
 resource "aws_security_group" "prometheus" {
   name        = "Prometheus"
@@ -27,7 +31,7 @@ resource "aws_security_group_rule" "prometheus_ssh" {
   to_port           = 22
   protocol          = "tcp"
   security_group_id = aws_security_group.prometheus.id
-  cidr_blocks       = ["${formatlist("%s/32", data.dns_a_record_set.home.addrs)}"]
+  cidr_blocks       = [local.home_ips[0]]
 }
 
 resource "aws_security_group_rule" "prometheus_http" {
