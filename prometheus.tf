@@ -69,6 +69,11 @@ IFS=$'\n\t'
 # From: https://alestic.com/2010/12/ec2-user-data-output/
 exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 
+echo '*** Wait for other APT processes to finish'
+while sudo fuser /var/{lib/{dpkg,apt/lists},cache/apt/archives}/lock >/dev/null 2>&1; do
+  sleep 1
+done
+
 echo '*** Update APT'
 export DEBIAN_FRONTEND=noninteractive
 sudo apt-get -y update
