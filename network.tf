@@ -43,6 +43,15 @@ resource "aws_security_group_rule" "prometheus_https" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
+resource "aws_security_group_rule" "prometheus_wireguard" {
+  type              = "ingress"
+  from_port         = 9473
+  to_port           = 9473
+  protocol          = "udp"
+  security_group_id = aws_security_group.prometheus.id
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
 resource "aws_security_group_rule" "prometheus_ping" {
   type              = "ingress"
   from_port         = 8

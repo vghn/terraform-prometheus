@@ -51,6 +51,13 @@ resource "cloudflare_record" "prometheus" {
   type    = "CNAME"
 }
 
+resource "cloudflare_record" "wg" {
+  zone_id = var.cloudflare_zone_id
+  name    = "wg"
+  value   = "prometheus.ghn.me"
+  type    = "CNAME"
+}
+
 resource "aws_instance" "prometheus" {
   instance_type               = "t3.micro"
   ami                         = data.aws_ami.prometheus.id
@@ -87,6 +94,19 @@ echo '*** Mount Data EBS'
 sudo mkdir -p /data
 echo '/dev/nvme1n1  /data  ext4  defaults,nofail  0  2' | sudo tee -a /etc/fstab
 sudo mount -a
+
+if [[ -d /data/wireguard ]]; then
+  echo '*** Restore WireGuard config'
+  sudo apt-get -qy install wireguard
+  sudo mkdir -p /etc/wireguard
+  echo '/data/wireguard  /etc/wireguard  none  defaults,bind  0  2' | sudo tee -a /etc/fstab
+  sudo mount -a
+  if [[ -s /etc/wireguard/wg0.conf ]]; then
+    echo '*** Restart services'
+    sudo systemctl start wg-quick@wg0
+    sudo systemctl enable wg-quick@wg0
+  fi
+fi
 
 if [[ -d /data/swarm ]]; then
   echo '*** Restore Swarm'
