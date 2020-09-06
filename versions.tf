@@ -6,6 +6,9 @@ terraform {
     cloudflare = {
       source = "cloudflare/cloudflare"
     }
+    dns = {
+      source = "hashicorp/dns"
+    }
     null = {
       source = "hashicorp/null"
     }
